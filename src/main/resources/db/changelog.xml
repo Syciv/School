@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.4.xsd">
+
+
+    <changeSet id="study/1.0/17-02-2023/1" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE SCHEMA IF NOT EXISTS study;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/2" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.pupil
+            (
+                id                   bigserial PRIMARY KEY,
+                name                 text,
+                surname              text,
+                patronymic           text,
+                group_id             bigint,
+                datetime_of_creation timestamp,
+                datetime_of_delete   timestamp
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
