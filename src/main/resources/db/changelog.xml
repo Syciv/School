@@ -32,4 +32,12 @@
         </sql>
     </changeSet>
 
+    <changeSet id="study/1.0/17-02-2023/3" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            ALTER TABLE study.pupil ADD COLUMN entity_id bigint;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
