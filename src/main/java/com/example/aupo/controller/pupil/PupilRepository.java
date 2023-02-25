@@ -19,7 +19,7 @@ public class PupilRepository {
 
     private final DSLContext dslContext;
 
-    public List<Pupil> getList(Condition condition, Integer page, Integer pageSize){
+    public List<Pupil> fetch(Condition condition, Integer page, Integer pageSize){
         return dslContext
                 .selectFrom(PUPIL)
                 .where(condition)

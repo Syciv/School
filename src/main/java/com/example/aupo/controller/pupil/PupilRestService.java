@@ -32,7 +32,7 @@ public class PupilRestService {
         pupil.setName(pupilCreateDto.getName());
         pupil.setSurname(pupilCreateDto.getSurname());
         pupil.setPatronymic(pupilCreateDto.getPatronymic());
-        pupil.setGroupId(pupilCreateDto.getGroupId());
+        pupil.setGroupEntityId(pupilCreateDto.getGroupId());
         pupil.setDatetimeOfCreation(LocalDateTime.now());
         pupilDao.insert(pupil);
     }
@@ -56,9 +56,9 @@ public class PupilRestService {
             condition = condition.and(PUPIL.PATRONYMIC.containsIgnoreCase(patronymic));
         }
         if(Objects.nonNull(groupId)){
-            condition = condition.and(PUPIL.GROUP_ID.eq(groupId));
+            condition = condition.and(PUPIL.GROUP_ENTITY_ID.eq(groupId));
         }
-        return pupilRepository.getList(condition, page, pageSize);
+        return pupilRepository.fetch(condition, page, pageSize);
     }
 
     @Transactional
@@ -82,7 +82,7 @@ public class PupilRestService {
         pupilRecord.setSurname(elements[1]);
         pupilRecord.setName(elements[2]);
         pupilRecord.setPatronymic(elements[3]);
-        pupilRecord.setGroupId(Long.parseLong(elements[4]));
+        pupilRecord.setGroupEntityId(Long.parseLong(elements[4]));
         pupilRecord.setDatetimeOfCreation(LocalDateTime.now());
         return pupilRecord;
     }

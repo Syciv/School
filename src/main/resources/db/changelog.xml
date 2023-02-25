@@ -40,4 +40,90 @@
         </sql>
     </changeSet>
 
+    <changeSet id="study/1.0/17-02-2023/4" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.teacher
+            (
+                id                   bigserial PRIMARY KEY,
+                entity_id            bigint,
+                name                 text,
+                surname              text,
+                patronymic           text,
+                datetime_of_creation timestamp,
+                datetime_of_delete   timestamp
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/4" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.teacher
+            (
+                id                   bigserial PRIMARY KEY,
+                entity_id            bigint,
+                name                 text,
+                surname              text,
+                patronymic           text,
+                datetime_of_creation timestamp,
+                datetime_of_delete   timestamp
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/5" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.group
+            (
+                id                   bigserial PRIMARY KEY,
+                entity_id            bigint,
+                parallel_entity_id   bigint,
+                teacher_entity_id    bigint,
+                year                 integer,
+                datetime_of_creation timestamp,
+                datetime_of_delete   timestamp
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/6" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            ALTER TABLE study.pupil RENAME COLUMN group_id TO group_entity_id;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/7" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.parallel
+            (
+                id        bigserial PRIMARY KEY,
+                entity_id bigint,
+                num       bigint
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet id="study/1.0/17-02-2023/8" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.level
+            (
+                id        bigserial PRIMARY KEY,
+                entity_id bigint,
+                name      bigint
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
