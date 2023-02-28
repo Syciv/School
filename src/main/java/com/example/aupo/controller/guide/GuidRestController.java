@@ -1,5 +1,6 @@
 package com.example.aupo.controller.guide;
 
+import com.example.aupo.tables.pojos.Level;
 import com.example.aupo.tables.pojos.Parallel;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,11 @@ public class GuidRestController {
     @GetMapping(value = "/parallel")
     public List<Parallel> getParallels(){
         return guideRestService.parallelList();
+    }
+
+    @GetMapping(value = "/level")
+    public List<Level> getLevels(){
+        return guideRestService.getLevelList();
     }
 
 }

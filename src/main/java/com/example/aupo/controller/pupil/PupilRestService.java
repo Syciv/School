@@ -1,23 +1,21 @@
 package com.example.aupo.controller.pupil;
 
+import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.daos.PupilDao;
 import com.example.aupo.tables.pojos.Pupil;
 import com.example.aupo.tables.records.PupilRecord;
+import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
-import org.jooq.DSLContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import static com.example.aupo.tables.Pupil.PUPIL;
-import static org.jooq.impl.DSL.trueCondition;
 
 @Service
 @AllArgsConstructor
@@ -28,16 +26,14 @@ public class PupilRestService {
     private final PupilDao pupilDao;
 
     public void createPupil(PupilCreateDto pupilCreateDto){
-        Pupil pupil = new Pupil();
-        pupil.setName(pupilCreateDto.getName());
-        pupil.setSurname(pupilCreateDto.getSurname());
-        pupil.setPatronymic(pupilCreateDto.getPatronymic());
-        pupil.setGroupEntityId(pupilCreateDto.getGroupId());
-        pupil.setDatetimeOfCreation(LocalDateTime.now());
+        Pupil pupil = getPupilPojoFromCreateDto(pupilCreateDto);
+        Long entityId = pupilRepository.getNextId();
+        pupil.setId(entityId);
+        pupil.setEntityId(entityId);
         pupilDao.insert(pupil);
     }
 
-    public List<Pupil> getList(
+    public ResponseList<Pupil> getList(
             Integer page,
             Integer pageSize,
             String name,
@@ -58,26 +54,26 @@ public class PupilRestService {
         if(Objects.nonNull(groupId)){
             condition = condition.and(PUPIL.GROUP_ENTITY_ID.eq(groupId));
         }
-        return pupilRepository.fetch(condition, page, pageSize);
+        List<Pupil> items = pupilRepository.fetch(condition, page, pageSize);
+        Long total = pupilRepository.getCount(condition);
+        ResponseList<Pupil> result = new ResponseList<>();
+        result.setItems(items);
+        result.setTotal(total);
+        return result;
     }
 
     @Transactional
     public void saveFromCSV(String fileContent) {
-        String[] lines = fileContent.split("\r\n");
-        List<PupilRecord> pupilRecordList = new ArrayList<>();
-        for(String line : lines){
-            pupilRecordList.add(getRecordFromCSVLine(line));
-        }
+        List<String[]> values = CSVUtil.parseCSV(fileContent, ";");
+        List<PupilRecord> pupilRecordList = values.stream().map(this::getPupilRecordFromCSVLine).toList();
         pupilRepository.updateDateTimeOfDeleteByIds(
                 pupilRecordList.stream().map(PupilRecord::getEntityId).toList(),
                 LocalDateTime.now());
-
         pupilRepository.batchInsert(pupilRecordList);
     }
 
-    private PupilRecord getRecordFromCSVLine(String line){
+    private PupilRecord getPupilRecordFromCSVLine(String[] elements){
         PupilRecord pupilRecord = new PupilRecord();
-        String[] elements = line.split(";");
         pupilRecord.setEntityId(Long.parseLong(elements[0]));
         pupilRecord.setSurname(elements[1]);
         pupilRecord.setName(elements[2]);
@@ -87,4 +83,24 @@ public class PupilRestService {
         return pupilRecord;
     }
 
+    private Pupil getPupilPojoFromCreateDto(PupilCreateDto pupilCreateDto){
+        Pupil pupil = new Pupil();
+        pupil.setName(pupilCreateDto.getName());
+        pupil.setSurname(pupilCreateDto.getSurname());
+        pupil.setPatronymic(pupilCreateDto.getPatronymic());
+        pupil.setGroupEntityId(pupilCreateDto.getGroupId());
+        pupil.setDatetimeOfCreation(LocalDateTime.now());
+        return pupil;
+    }
+
+    public Pupil getOne(Long entityId){
+        return pupilRepository.fetchActualByEntityId(entityId).orElseThrow(NotFoundException::new);
+    }
+
+    @Transactional
+    public void updatePupil(Pupil pupil) {
+        Condition condition = PUPIL.ENTITY_ID.eq(pupil.getEntityId()).and(PUPIL.DATETIME_OF_DELETE.isNull());
+        pupilRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
+        pupilDao.insert(pupil);
+    }
 }

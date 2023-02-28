@@ -1,8 +1,9 @@
 package com.example.aupo.controller.teacher;
 
-import com.example.aupo.controller.pupil.PupilCreateDto;
-import com.example.aupo.tables.pojos.Pupil;
+import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.pojos.Teacher;
+import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -20,16 +19,25 @@ public class TeacherRestController {
 
     private final TeacherRestService teacherRestService;
 
+    @GetMapping(value = "/{entityId}")
+    public ResponseEntity<Teacher> get(@PathVariable Long entityId) throws NotFoundException {
+        try {
+            return ResponseEntity.ok(teacherRestService.getOne(entityId));
+        }
+        catch (NotFoundException e){
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @GetMapping(value = "/list")
-    public List<Teacher> list(
+    public ResponseList<Teacher> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "surname", required = false) String surname,
-            @RequestParam(value = "patronymic", required = false) String patronymic,
-            @RequestParam(value = "groupId", required = false) Long groupId
+            @RequestParam(value = "patronymic", required = false) String patronymic
     ){
-        return teacherRestService.getList(page, pageSize, name, surname, patronymic, groupId);
+        return teacherRestService.getList(page, pageSize, name, surname, patronymic);
     }
 
     @PostMapping
@@ -37,16 +45,20 @@ public class TeacherRestController {
         teacherRestService.createTeacher(teacherCreateDto);
     }
 
+    @PutMapping
+    public void update(@RequestBody Teacher teacher){
+        teacherRestService.updateTeacher(teacher);
+    }
+
     @PostMapping(value = "upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCsv(MultipartFile csvFile) throws UnsupportedEncodingException {
-        byte[] bytes;
+    public ResponseEntity<String> uploadCsv(MultipartFile csvFile) {
+        String fileContent;
         try {
-            bytes = csvFile.getBytes();
+            fileContent = CSVUtil.getFileContent(csvFile);
         }
         catch (IOException exception){
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
-        String fileContent = new String(bytes, "cp1251");
         teacherRestService.saveFromCSV(fileContent);
         return ResponseEntity.ok("Ок");
     }

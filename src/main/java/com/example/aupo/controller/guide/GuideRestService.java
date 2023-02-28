@@ -25,6 +25,11 @@ public class GuideRestService {
         Condition condition = trueCondition();
         return guideRepository.fetchLevels(condition);
     }
+
+    public List<Level> getLevelList() {
+        Condition condition = trueCondition();
+        return guideRepository.fetchLevels(condition);
+    }
 }
 
 

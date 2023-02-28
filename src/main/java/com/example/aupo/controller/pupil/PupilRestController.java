@@ -1,6 +1,8 @@
 package com.example.aupo.controller.pupil;
 
+import com.example.aupo.controller.dto.ResponseList;
 import com.example.aupo.tables.pojos.Pupil;
+import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/pupil")
@@ -18,8 +18,13 @@ public class PupilRestController {
 
     private final PupilRestService pupilRestService;
 
+    @GetMapping(value = "/{entityId}")
+    public Pupil get(@PathVariable Long entityId){
+        return pupilRestService.getOne(entityId);
+    }
+
     @GetMapping(value = "/list")
-    public List<Pupil> list(
+    public ResponseList<Pupil> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "name", required = false) String name,
@@ -35,16 +40,21 @@ public class PupilRestController {
         pupilRestService.createPupil(pupilCreateDto);
     }
 
+    @PutMapping
+    public void update(@RequestBody Pupil pupil){
+        pupilRestService.updatePupil(pupil);
+    }
+
+
     @PostMapping(value = "upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCsv(MultipartFile csvFile) throws UnsupportedEncodingException {
-        byte[] bytes;
+    public ResponseEntity<String> uploadCsv(MultipartFile csvFile) {
+        String fileContent;
         try {
-            bytes = csvFile.getBytes();
+            fileContent = CSVUtil.getFileContent(csvFile);
         }
         catch (IOException exception){
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
-        String fileContent = new String(bytes, "cp1251");
         pupilRestService.saveFromCSV(fileContent);
         return ResponseEntity.ok("Ок");
     }

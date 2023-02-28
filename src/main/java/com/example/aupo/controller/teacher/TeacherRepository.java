@@ -9,13 +9,14 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
-import static com.example.aupo.Tables.PUPIL;
+import static com.example.aupo.Sequences.TEACHER_ID_SEQ;
 import static com.example.aupo.Tables.TEACHER;
 
 @Repository
 @AllArgsConstructor
-public class TeacherRepository {
+public class TeacherRepository{
 
     private final DSLContext dslContext;
 
@@ -28,12 +29,14 @@ public class TeacherRepository {
                 .fetchInto(Teacher.class);
     }
 
-    public Teacher fetchActualByEntityId(Long entityId){
-        return dslContext
+    public Optional<Teacher> fetchActualByEntityId(Long entityId){
+        return Optional.ofNullable(
+                dslContext
                 .selectFrom(TEACHER)
                 .where(TEACHER.ENTITY_ID.eq(entityId),
                         TEACHER.DATETIME_OF_DELETE.isNull())
-                .fetchOneInto(Teacher.class);
+                .fetchOneInto(Teacher.class)
+        );
     }
 
     public void batchInsert(List<TeacherRecord> teacherRecordList){
@@ -48,4 +51,23 @@ public class TeacherRepository {
                 .execute();
     }
 
+    public Long getCount(Condition condition) {
+        return dslContext
+                .selectCount()
+                .from(TEACHER)
+                .where(condition)
+                .fetchOneInto(Long.class);
+    }
+
+    public void updateDateTimeOfDeleteByCondition(Condition condition, LocalDateTime localDateTime) {
+        dslContext
+                .update(TEACHER)
+                .set(TEACHER.DATETIME_OF_DELETE, localDateTime)
+                .where(condition)
+                .execute();
+    }
+
+    public Long getNextId() {
+        return dslContext.nextval(TEACHER_ID_SEQ);
+    }
 }

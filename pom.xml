@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.0.2</version>
+        <version>2.6.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.example</groupId>
@@ -112,9 +112,6 @@
                         <version>2.1.1</version>
                         <executions>
                             <execution>
-                                <!-- Start the container in any phase before the actual code
-                                     generation is required, i.e. at the latest in
-                                     generate-sources -->
                                 <phase>generate-sources</phase>
                                 <goals>
                                     <goal>execute</goal>
@@ -127,14 +124,8 @@
                                             .withUsername("${db.username}")
                                             .withDatabaseName("cts")
                                             .withPassword("${db.password}");
-
                                     db.start();
-
-                                    // After you've started the container, collect its generated
-                                    // JDBC URL (which contains a random port)
                                     project.properties.setProperty('db.url', db.getJdbcUrl());
-//                                        println "test";
-//                                        println db.getJdbcUrl();
                                     </source>
                                 </configuration>
                             </execution>
@@ -205,6 +196,7 @@
                                         <generate>
                                             <pojos>true</pojos>
                                             <daos>true</daos>
+                                            <sequences>true</sequences>
                                             <validationAnnotations>true</validationAnnotations>
                                             <springAnnotations>true</springAnnotations>
                                             <globalObjectReferences>true</globalObjectReferences>

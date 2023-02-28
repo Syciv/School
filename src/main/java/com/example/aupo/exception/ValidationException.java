@@ -1,4 +1,4 @@
-package com.example.aupo.controller.exception;
+package com.example.aupo.exception;
 
 public class ValidationException extends RuntimeException{
 
