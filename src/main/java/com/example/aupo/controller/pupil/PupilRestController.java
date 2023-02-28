@@ -1,8 +1,10 @@
 package com.example.aupo.controller.pupil;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.pojos.Pupil;
 import com.example.aupo.util.CSVUtil;
+import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,13 @@ public class PupilRestController {
     private final PupilRestService pupilRestService;
 
     @GetMapping(value = "/{entityId}")
-    public Pupil get(@PathVariable Long entityId){
-        return pupilRestService.getOne(entityId);
+    public ResponseEntity<Pupil> get(@PathVariable Long entityId) {
+        try {
+            return ResponseEntity.ok(pupilRestService.getOne(entityId));
+        } catch (NotFoundException e) {
+            LogUtil.info(String.format("Не найдено: pupil - %d", entityId));
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(value = "/list")
@@ -53,6 +60,7 @@ public class PupilRestController {
             fileContent = CSVUtil.getFileContent(csvFile);
         }
         catch (IOException exception){
+            LogUtil.info("Невозможно обработать файл pupil: " + csvFile.getName());
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
         pupilRestService.saveFromCSV(fileContent);

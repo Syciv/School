@@ -4,6 +4,7 @@ import com.example.aupo.controller.dto.ResponseList;
 import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.pojos.Teacher;
 import com.example.aupo.util.CSVUtil;
+import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -25,6 +26,7 @@ public class TeacherRestController {
             return ResponseEntity.ok(teacherRestService.getOne(entityId));
         }
         catch (NotFoundException e){
+            LogUtil.info(String.format("Не найдено: teacher - %d", entityId));
             return ResponseEntity.notFound().build();
         }
     }
@@ -57,6 +59,7 @@ public class TeacherRestController {
             fileContent = CSVUtil.getFileContent(csvFile);
         }
         catch (IOException exception){
+            LogUtil.info("Невозможно обработать файл teacher: " + csvFile.getName());
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
         teacherRestService.saveFromCSV(fileContent);

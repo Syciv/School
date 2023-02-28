@@ -1,8 +1,11 @@
 package com.example.aupo.controller.group;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.pojos.Group;
+import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -30,8 +33,13 @@ public class GroupRestController {
     }
 
     @GetMapping(value = "/{entityId}")
-    public Group get(@PathVariable Long entityId){
-        return groupRestService.getOne(entityId);
+    public ResponseEntity<Group> get(@PathVariable Long entityId){
+        try {
+            return ResponseEntity.ok(groupRestService.getOne(entityId));
+        } catch (NotFoundException e) {
+            LogUtil.info(String.format("Не найдено: group - %d", entityId));
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PostMapping
