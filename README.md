@@ -16,7 +16,7 @@ ___
 `docker-compose up`
 
 ## Спецификация АПИ
-http://localhost:8080/aupo/api/swagger-ui/index.html
+http://localhost:8080/aupo/api/swagger-ui/index.html после запуска приложения
 
 ## Логи
 Записываются в logs.txt
