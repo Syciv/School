@@ -12,6 +12,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @ControllerAdvice
 public class StudyExceptionHandler extends ResponseEntityExceptionHandler {
 
+    /**
+     * Обработчик любых необработанных исключений - записывает ошибку в логи и отдаёт ответ об ошибке на сервере
+     */
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleAllExceptions(
             final Exception e,

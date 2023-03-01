@@ -54,8 +54,10 @@ public class PupilRestService {
         if(Objects.nonNull(groupId)){
             condition = condition.and(PUPIL.GROUP_ENTITY_ID.eq(groupId));
         }
+
         List<Pupil> items = pupilRepository.fetch(condition, page, pageSize);
         Long total = pupilRepository.getCount(condition);
+
         ResponseList<Pupil> result = new ResponseList<>();
         result.setItems(items);
         result.setTotal(total);
@@ -66,6 +68,7 @@ public class PupilRestService {
     public void saveFromCSV(String fileContent) {
         List<String[]> values = CSVUtil.parseCSV(fileContent, ";");
         List<PupilRecord> pupilRecordList = values.stream().map(this::getPupilRecordFromCSVLine).toList();
+
         pupilRepository.updateDateTimeOfDeleteByIds(
                 pupilRecordList.stream().map(PupilRecord::getEntityId).toList(),
                 LocalDateTime.now());

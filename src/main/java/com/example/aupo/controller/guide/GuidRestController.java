@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Контроллер для просмотра справочников
+ */
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/guide")

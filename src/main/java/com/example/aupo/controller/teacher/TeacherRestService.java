@@ -57,11 +57,14 @@ public class TeacherRestService {
         if(Objects.nonNull(patronymic)){
             condition = condition.and(TEACHER.PATRONYMIC.containsIgnoreCase(patronymic));
         }
+
         List<Teacher> items = teacherRepository.fetch(condition, page, pageSize);
         Long total = teacherRepository.getCount(condition);
+
         ResponseList<Teacher> result = new ResponseList<>();
         result.setItems(items);
         result.setTotal(total);
+
         return result;
     }
 
@@ -70,9 +73,12 @@ public class TeacherRestService {
     public void saveFromCSV(String fileContent) {
         List<String[]> values = CSVUtil.parseCSV(fileContent, ";");
         List<TeacherRecord> teacherRecordList = values.stream().map(this::getTeacherRecordFromCSVLine).toList();
+
+        // Удаление текущих сосояний добавляемых сущностей
         teacherRepository.updateDateTimeOfDeleteByIds(
                 teacherRecordList.stream().map(TeacherRecord::getEntityId).toList(),
                 LocalDateTime.now());
+        // Все сущности добавляются одним batch запросом
         teacherRepository.batchInsert(teacherRecordList);
     }
 
@@ -99,6 +105,8 @@ public class TeacherRestService {
     public void updateTeacher(Teacher teacher) {
         Condition condition = TEACHER.ENTITY_ID.eq(teacher.getEntityId()).and(TEACHER.DATETIME_OF_DELETE.isNull());
         teacher.setId(null);
+
+        // Удаление текущего состояния сущности и добавление нового
         teacherRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
         teacherDao.insert(teacher);
     }

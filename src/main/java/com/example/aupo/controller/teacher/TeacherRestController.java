@@ -20,6 +20,9 @@ public class TeacherRestController {
 
     private final TeacherRestService teacherRestService;
 
+    /**
+     * Просмотр отдельной сущности по внешнему идентификатору
+     */
     @GetMapping(value = "/{entityId}")
     public ResponseEntity<Teacher> get(@PathVariable Long entityId) throws NotFoundException {
         try {
@@ -31,6 +34,9 @@ public class TeacherRestController {
         }
     }
 
+    /**
+     * Пагинированный список с фильтрами по всем полям
+     */
     @GetMapping(value = "/list")
     public ResponseList<Teacher> list(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -55,6 +61,7 @@ public class TeacherRestController {
     @PostMapping(value = "upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadCsv(MultipartFile csvFile) {
         String fileContent;
+
         try {
             fileContent = CSVUtil.getFileContent(csvFile);
         }
@@ -62,6 +69,7 @@ public class TeacherRestController {
             LogUtil.info("Невозможно обработать файл teacher: " + csvFile.getName());
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
+
         teacherRestService.saveFromCSV(fileContent);
         return ResponseEntity.ok("Ок");
     }

@@ -15,6 +15,9 @@ public class GroupRestController {
 
     private final GroupRestService groupRestService;
 
+    /**
+     * Пагинированный список с фильтрами по всем полям
+     */
     @GetMapping(value = "/list")
     public ResponseList<Group> getList(
             @RequestParam(value = "page", defaultValue = "1") Integer page,
@@ -32,6 +35,9 @@ public class GroupRestController {
         );
     }
 
+    /**
+     * Просмотр отдельной сущности по внешнему идентификатору
+     */
     @GetMapping(value = "/{entityId}")
     public ResponseEntity<Group> get(@PathVariable Long entityId){
         try {
@@ -43,7 +49,7 @@ public class GroupRestController {
     }
 
     @PostMapping
-    public void get(@RequestBody GroupCreateDto groupCreateDto){
+    public void create(@RequestBody GroupCreateDto groupCreateDto){
         groupRestService.create(groupCreateDto);
     }
 

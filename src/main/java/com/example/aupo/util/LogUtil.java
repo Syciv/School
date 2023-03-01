@@ -20,6 +20,9 @@ public class LogUtil {
         }
     }
 
+    /**
+     * Вывод сообщения в файл и в консоль
+     */
     private void log(String level, String message){
         message = String.format("%s (%s): %s", level, LocalDateTime.now(), message);
         System.out.println(message);

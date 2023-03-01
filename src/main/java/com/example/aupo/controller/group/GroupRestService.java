@@ -40,8 +40,10 @@ public class GroupRestService {
         if(Objects.nonNull(parallelEntityId)){
             condition = condition.and(GROUP.YEAR.eq(year));
         }
+
         List<Group> items = groupRepository.fetch(condition, page, pageSize);
         Long total = groupRepository.getCount(condition);
+
         ResponseList<Group> result = new ResponseList<>();
         result.setItems(items);
         result.setTotal(total);
@@ -64,6 +66,8 @@ public class GroupRestService {
     public void update(Group group) {
         Condition condition = GROUP.ENTITY_ID.eq(group.getEntityId()).and(GROUP.DATETIME_OF_DELETE.isNull());
         group.setId(null);
+
+        // Метка удаления старой версии сущности
         groupRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
         groupDao.insert(group);
     }
