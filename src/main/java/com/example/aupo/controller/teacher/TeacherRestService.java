@@ -34,6 +34,9 @@ public class TeacherRestService {
     }
     
     public Teacher getOne(Long entityId) throws NotFoundException {
+        if(entityId == 1) {
+            throw new RuntimeException("ddd");
+        }
         return teacherRepository.fetchActualByEntityId(entityId).orElseThrow(NotFoundException::new);
     }
     
