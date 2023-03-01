@@ -125,5 +125,28 @@
         </sql>
     </changeSet>
 
+    <changeSet id="study/1.0/01-03-2023/1" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            ALTER TABLE study.level ALTER COLUMN name TYPE text;
+
+            INSERT INTO study.level (entity_id, name)
+            values (1, 'Начальная школа'), (2, 'Средняя школа'), (3, 'Старшая школа');
+
+            INSERT INTO study.parallel (entity_id, num)
+            values (1, 1),
+                   (2, 2),
+                   (3, 3),
+                   (4, 4),
+                   (5, 5),
+                   (6, 6),
+                   (7, 7),
+                   (8, 8),
+                   (9, 9),
+                   (10, 10),
+                   (11, 11);
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
