@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+import static org.jooq.impl.DSL.selectFrom;
+
 @Repository
 @AllArgsConstructor
 public class GuideRepository {
@@ -28,6 +30,13 @@ public class GuideRepository {
                 .selectFrom(Tables.LEVEL)
                 .where(condition)
                 .fetchInto(Level.class);
+    }
+
+    public boolean existsParallels(Condition condition){
+        return dslContext
+                .fetchExists(
+                        selectFrom(Tables.PARALLEL)
+                                .where(condition));
     }
 
 }

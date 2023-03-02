@@ -1,7 +1,9 @@
 package com.example.aupo.controller.group;
 
 import static com.example.aupo.Sequences.GROUP_ID_SEQ;
+import static com.example.aupo.Tables.PUPIL;
 import static com.example.aupo.tables.Group.GROUP;
+import static org.jooq.impl.DSL.selectFrom;
 
 import com.example.aupo.tables.pojos.Group;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,13 @@ import java.util.Optional;
 public class GroupRepository {
 
     private final DSLContext dslContext;
+
+    public List<Group> fetch(Condition condition) {
+        return dslContext
+                .selectFrom(GROUP)
+                .where(condition)
+                .fetchInto(Group.class);
+    }
 
     public List<Group> fetch(Condition condition, Integer page, Integer pageSize) {
         return dslContext
@@ -55,5 +64,12 @@ public class GroupRepository {
                 .set(GROUP.DATETIME_OF_DELETE, localDateTime)
                 .where(condition)
                 .execute();
+    }
+
+    public boolean exists(Condition condition) {
+        return dslContext
+                .fetchExists(
+                        selectFrom(GROUP)
+                                .where(condition));
     }
 }

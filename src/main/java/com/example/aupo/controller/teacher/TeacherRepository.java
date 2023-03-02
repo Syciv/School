@@ -1,5 +1,6 @@
 package com.example.aupo.controller.teacher;
 
+import com.example.aupo.Tables;
 import com.example.aupo.tables.pojos.Teacher;
 import com.example.aupo.tables.records.TeacherRecord;
 import lombok.AllArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Optional;
 
 import static com.example.aupo.Sequences.TEACHER_ID_SEQ;
 import static com.example.aupo.Tables.TEACHER;
+import static org.jooq.impl.DSL.selectFrom;
 
 @Repository
 @AllArgsConstructor
@@ -69,5 +71,12 @@ public class TeacherRepository{
 
     public Long getNextId() {
         return dslContext.nextval(TEACHER_ID_SEQ);
+    }
+
+    public boolean exists(Condition condition){
+        return dslContext
+                .fetchExists(
+                        selectFrom(TEACHER)
+                                .where(condition));
     }
 }

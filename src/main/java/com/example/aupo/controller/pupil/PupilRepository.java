@@ -12,6 +12,8 @@ import java.util.Optional;
 
 import static com.example.aupo.Sequences.PUPIL_ID_SEQ;
 import static com.example.aupo.Tables.PUPIL;
+import static com.example.aupo.Tables.TEACHER;
+import static org.jooq.impl.DSL.selectFrom;
 
 
 @Repository
@@ -77,5 +79,12 @@ public class PupilRepository {
 
     public Long getNextId() {
         return dslContext.nextval(PUPIL_ID_SEQ);
+    }
+
+    public boolean exists(Condition condition) {
+        return dslContext
+                .fetchExists(
+                        selectFrom(PUPIL)
+                                .where(condition));
     }
 }

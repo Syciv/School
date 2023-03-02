@@ -37,4 +37,12 @@ public class StudyExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    @ExceptionHandler(ValidationException.class)
+    public ResponseEntity<Object> handleValidationExceptions(
+            final ValidationException e,
+            final WebRequest request
+    ) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
 }

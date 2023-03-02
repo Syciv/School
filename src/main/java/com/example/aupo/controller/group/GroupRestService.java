@@ -1,9 +1,15 @@
 package com.example.aupo.controller.group;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.controller.guide.GuideRepository;
+import com.example.aupo.controller.teacher.TeacherRepository;
 import com.example.aupo.exception.NotFoundException;
+import com.example.aupo.exception.ValidationException;
+import com.example.aupo.tables.Parallel;
 import com.example.aupo.tables.daos.GroupDao;
+import com.example.aupo.tables.daos.ParallelDao;
 import com.example.aupo.tables.pojos.Group;
+import com.example.aupo.tables.pojos.Teacher;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.springframework.stereotype.Service;
@@ -14,6 +20,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.aupo.tables.Group.GROUP;
+import static com.example.aupo.tables.Parallel.PARALLEL;
+import static com.example.aupo.tables.Teacher.TEACHER;
 
 @Service
 @AllArgsConstructor
@@ -21,7 +29,13 @@ public class GroupRestService {
 
     private final GroupRepository groupRepository;
 
+    private final TeacherRepository teacherRepository;
+
     private final GroupDao groupDao;
+
+    private final ParallelDao parallelDao;
+
+    private final GuideRepository guideRepository;
 
     public ResponseList<Group> list(
             Integer page,
@@ -55,6 +69,7 @@ public class GroupRestService {
     }
 
     public void create(GroupCreateDto groupCreateDto) {
+        validate(groupCreateDto);
         Group group = getPojoFromCreateDto(groupCreateDto);
         Long entityId = groupRepository.getNextId();
         group.setId(entityId);
@@ -79,6 +94,22 @@ public class GroupRestService {
         group.setYear(groupCreateDto.getYear());
         group.setDatetimeOfCreation(LocalDateTime.now());
         return group;
+    }
+
+    private void validate(GroupCreateDto groupCreateDto){
+        StringBuilder stringBuilder = new StringBuilder();
+        if(!teacherRepository.exists(TEACHER.ENTITY_ID.eq(groupCreateDto.getTeacherEntityId())
+                .and(TEACHER.DATETIME_OF_DELETE.isNull()))){
+            stringBuilder.append("Учителя не существует");
+            stringBuilder.append("\n");
+        }
+        if(!guideRepository.existsParallels(PARALLEL.ENTITY_ID.eq(groupCreateDto.getParallelEntityId()))){
+            stringBuilder.append("Параллели не существует");
+            stringBuilder.append("\n");
+        }
+        if(!stringBuilder.isEmpty()){
+            throw new ValidationException(stringBuilder.toString());
+        }
     }
 
 }
