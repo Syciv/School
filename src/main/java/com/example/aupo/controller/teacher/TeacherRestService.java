@@ -2,6 +2,7 @@ package com.example.aupo.controller.teacher;
 
 import com.example.aupo.controller.dto.ResponseList;
 import com.example.aupo.exception.NotFoundException;
+import com.example.aupo.exception.ValidationException;
 import com.example.aupo.tables.daos.TeacherDao;
 import com.example.aupo.tables.pojos.Teacher;
 import com.example.aupo.tables.records.TeacherRecord;
@@ -83,13 +84,18 @@ public class TeacherRestService {
     }
 
     private TeacherRecord getTeacherRecordFromCSVLine(String[] elements){
-        TeacherRecord teacherRecord = new TeacherRecord();
-        teacherRecord.setEntityId(Long.parseLong(elements[0]));
-        teacherRecord.setSurname(elements[1]);
-        teacherRecord.setName(elements[2]);
-        teacherRecord.setPatronymic(elements[3]);
-        teacherRecord.setDatetimeOfCreation(LocalDateTime.now());
-        return teacherRecord;
+        try {
+            TeacherRecord teacherRecord = new TeacherRecord();
+            teacherRecord.setEntityId(Long.parseLong(elements[0]));
+            teacherRecord.setSurname(elements[1]);
+            teacherRecord.setName(elements[2]);
+            teacherRecord.setPatronymic(elements[3]);
+            teacherRecord.setDatetimeOfCreation(LocalDateTime.now());
+            return teacherRecord;
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Неверный формат данных в файле");
+        }
     }
     
     private Teacher getTeacherPojoFromCreateDto(TeacherCreateDto teacherCreateDto){

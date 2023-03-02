@@ -90,15 +90,19 @@ public class PupilRestService {
         pupilRepository.batchInsert(pupilRecordList);
     }
 
-    private PupilRecord getPupilRecordFromCSVLine(String[] elements){
-        PupilRecord pupilRecord = new PupilRecord();
-        pupilRecord.setEntityId(Long.parseLong(elements[0]));
-        pupilRecord.setSurname(elements[1]);
-        pupilRecord.setName(elements[2]);
-        pupilRecord.setPatronymic(elements[3]);
-        pupilRecord.setGroupEntityId(Long.parseLong(elements[4]));
-        pupilRecord.setDatetimeOfCreation(LocalDateTime.now());
-        return pupilRecord;
+    private PupilRecord getPupilRecordFromCSVLine(String[] elements) {
+        try {
+            PupilRecord pupilRecord = new PupilRecord();
+            pupilRecord.setEntityId(Long.parseLong(elements[0]));
+            pupilRecord.setSurname(elements[1]);
+            pupilRecord.setName(elements[2]);
+            pupilRecord.setPatronymic(elements[3]);
+            pupilRecord.setGroupEntityId(Long.parseLong(elements[4]));
+            pupilRecord.setDatetimeOfCreation(LocalDateTime.now());
+            return pupilRecord;
+        } catch (NumberFormatException e) {
+            throw new ValidationException("Неверный формат данных в файле");
+        }
     }
 
     private Pupil getPupilPojoFromCreateDto(PupilCreateDto pupilCreateDto){

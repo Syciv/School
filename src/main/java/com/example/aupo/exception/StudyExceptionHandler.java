@@ -37,6 +37,9 @@ public class StudyExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
+    /**
+     * При validationException возвращает 400 клиенту и сообщение
+     */
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<Object> handleValidationExceptions(
             final ValidationException e,
