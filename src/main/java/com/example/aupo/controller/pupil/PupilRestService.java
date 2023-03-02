@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,6 +97,17 @@ public class PupilRestService {
         return pupil;
     }
 
+    private PupilRecord getPupilRecordFromPojo(Pupil pupil){
+        PupilRecord pupilRecord = new PupilRecord();
+        pupilRecord.setEntityId(pupil.getEntityId());
+        pupilRecord.setName(pupil.getName());
+        pupilRecord.setSurname(pupil.getSurname());
+        pupilRecord.setPatronymic(pupil.getPatronymic());
+        pupilRecord.setGroupEntityId(pupil.getGroupEntityId());
+        pupilRecord.setDatetimeOfCreation(LocalDateTime.now());
+        return pupilRecord;
+    }
+
     public Pupil getOne(Long entityId){
         return pupilRepository.fetchActualByEntityId(entityId).orElseThrow(NotFoundException::new);
     }
@@ -105,5 +117,19 @@ public class PupilRestService {
         Condition condition = PUPIL.ENTITY_ID.eq(pupil.getEntityId()).and(PUPIL.DATETIME_OF_DELETE.isNull());
         pupilRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
         pupilDao.insert(pupil);
+    }
+
+    @Transactional
+    public void migrate(List<Long> pupilIds, Long groupId) {
+        List<PupilRecord> newPupils = new ArrayList<>();
+        List<Pupil> oldPupils = pupilRepository.fetch(PUPIL.DATETIME_OF_DELETE.isNull().and(PUPIL.ENTITY_ID.in(pupilIds)));
+        oldPupils.forEach(p -> {
+           p.setId(null);
+           p.setGroupEntityId(groupId);
+           newPupils.add(getPupilRecordFromPojo(p));
+        });
+
+        pupilRepository.updateDateTimeOfDeleteByIds(pupilIds, LocalDateTime.now());
+        pupilRepository.batchInsert(newPupils);
     }
 }

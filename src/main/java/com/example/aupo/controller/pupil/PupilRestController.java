@@ -76,5 +76,13 @@ public class PupilRestController {
     }
 
 
+    /**
+     * Массовое перемещение учеников в группу
+     */
+    @PutMapping("/migrate")
+    public void migrate(@RequestBody PupilMigrateDto pupilMigrateDto){
+        pupilRestService.migrate(pupilMigrateDto.getPupilIds(), pupilMigrateDto.getGroupId());
+    }
+
 
 }
