@@ -7,6 +7,6 @@ public class GroupCreateDto {
 
     private Long parallelEntityId;
     private Long teacherEntityId;
-    private Integer year;
+    private Integer yearEntityId;
 
 }

@@ -1,21 +1,28 @@
 package com.example.aupo.controller.group;
 
+import com.example.aupo.Tables;
 import com.example.aupo.controller.dto.ResponseList;
 import com.example.aupo.controller.guide.GuideRepository;
 import com.example.aupo.controller.teacher.TeacherRepository;
 import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.exception.ValidationException;
-import com.example.aupo.tables.Parallel;
 import com.example.aupo.tables.daos.GroupDao;
 import com.example.aupo.tables.daos.ParallelDao;
 import com.example.aupo.tables.pojos.Group;
+import com.example.aupo.tables.pojos.Parallel;
 import com.example.aupo.tables.pojos.Teacher;
+import com.example.aupo.tables.pojos.Year;
+import com.example.aupo.tables.records.GroupRecord;
+import com.example.aupo.tables.records.PupilRecord;
+import com.example.aupo.tables.records.TeacherRecord;
+import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,8 +39,6 @@ public class GroupRestService {
     private final TeacherRepository teacherRepository;
 
     private final GroupDao groupDao;
-
-    private final ParallelDao parallelDao;
 
     private final GuideRepository guideRepository;
 
@@ -52,7 +57,7 @@ public class GroupRestService {
             condition = condition.and(GROUP.TEACHER_ENTITY_ID.eq(teacherEntityId));
         }
         if(Objects.nonNull(parallelEntityId)){
-            condition = condition.and(GROUP.YEAR.eq(year));
+            condition = condition.and(GROUP.YEAR_ENTITY_ID.eq(year));
         }
 
         List<Group> items = groupRepository.fetch(condition, page, pageSize);
@@ -91,7 +96,7 @@ public class GroupRestService {
         Group group = new Group();
         group.setTeacherEntityId(groupCreateDto.getTeacherEntityId());
         group.setParallelEntityId(groupCreateDto.getParallelEntityId());
-        group.setYear(groupCreateDto.getYear());
+        group.setYearEntityId(groupCreateDto.getYearEntityId());
         group.setDatetimeOfCreation(LocalDateTime.now());
         return group;
     }
@@ -109,6 +114,65 @@ public class GroupRestService {
         }
         if(!stringBuilder.isEmpty()){
             throw new ValidationException(stringBuilder.toString());
+        }
+    }
+
+    public void saveFromCSV(String fileContent) {
+        List<String[]> values = CSVUtil.parseCSV(fileContent, ";");
+        List<GroupRecord> groupRecordList = values.stream().map(this::getGroupRecordFromCSVLine).toList();
+        validateList(groupRecordList);
+        groupRepository.updateDateTimeOfDeleteByIds(
+                groupRecordList.stream().map(GroupRecord::getEntityId).toList(),
+                LocalDateTime.now());
+        groupRepository.batchInsert(groupRecordList);
+    }
+
+    private void validateList(List<GroupRecord> groupRecordList) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        List<Long> groupParallels = groupRecordList.stream().map(GroupRecord::getParallelEntityId).toList();
+        List<Long> existingParallels = guideRepository.fetchParallels(PARALLEL.ENTITY_ID.in(groupParallels))
+                .stream().map(Parallel::getEntityId).toList();
+        if(!new HashSet<>(existingParallels).equals(new HashSet<>(groupParallels))){
+            stringBuilder.append("Несуществующая параллель");
+            stringBuilder.append("\n");
+        }
+
+        List<Long> groupTeachers = groupRecordList.stream().map(GroupRecord::getTeacherEntityId).toList();
+        List<Long> existingTeachers = teacherRepository.fetch(TEACHER.DATETIME_OF_DELETE.isNull()
+                                .and(TEACHER.ENTITY_ID.in(groupTeachers)))
+                .stream().map(Teacher::getEntityId).toList();
+        if(!new HashSet<>(existingTeachers).equals(new HashSet<>(groupTeachers))){
+            stringBuilder.append("Несуществующий учитель");
+            stringBuilder.append("\n");
+        }
+
+        List<Long> groupYears = groupRecordList.stream().map(GroupRecord::getTeacherEntityId).toList();
+        List<Long> existingYears = guideRepository.fetchYears(Tables.YEAR.ENTITY_ID.in(groupYears))
+                .stream().map(Year::getEntityId).toList();
+        if(!new HashSet<>(existingYears).equals(new HashSet<>(groupYears))){
+            stringBuilder.append("Несуществующий учебный год");
+            stringBuilder.append("\n");
+        }
+
+        if(!stringBuilder.isEmpty()){
+            throw new ValidationException(stringBuilder.toString());
+        }
+    }
+
+    private GroupRecord getGroupRecordFromCSVLine(String[] elements){
+
+        try {
+            GroupRecord groupRecord = new GroupRecord();
+            groupRecord.setEntityId(Long.parseLong(elements[0]));
+            groupRecord.setParallelEntityId(Long.parseLong(elements[1]));
+            groupRecord.setTeacherEntityId(Long.parseLong(elements[2]));
+            groupRecord.setYearEntityId(Integer.parseInt(elements[3]));
+            groupRecord.setDatetimeOfCreation(LocalDateTime.now());
+            return groupRecord;
+        }
+        catch (NumberFormatException e){
+            throw new ValidationException("Неверный формат данных в файле");
         }
     }
 

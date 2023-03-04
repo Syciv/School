@@ -2,10 +2,13 @@ package com.example.aupo.controller.group;
 
 import static com.example.aupo.Sequences.GROUP_ID_SEQ;
 import static com.example.aupo.Tables.PUPIL;
+import static com.example.aupo.Tables.TEACHER;
 import static com.example.aupo.tables.Group.GROUP;
 import static org.jooq.impl.DSL.selectFrom;
 
 import com.example.aupo.tables.pojos.Group;
+import com.example.aupo.tables.records.GroupRecord;
+import com.example.aupo.tables.records.TeacherRecord;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -71,5 +74,17 @@ public class GroupRepository {
                 .fetchExists(
                         selectFrom(GROUP)
                                 .where(condition));
+    }
+
+    public void batchInsert(List<GroupRecord> groupRecordList){
+        dslContext.batchInsert(groupRecordList).execute();
+    }
+
+    public void updateDateTimeOfDeleteByIds(List<Long> entityIds, LocalDateTime localDateTime) {
+        dslContext
+                .update(GROUP)
+                .set(GROUP.DATETIME_OF_DELETE, localDateTime)
+                .where(GROUP.ENTITY_ID.in(entityIds))
+                .execute();
     }
 }

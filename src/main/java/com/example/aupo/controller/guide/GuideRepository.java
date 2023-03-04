@@ -3,6 +3,7 @@ package com.example.aupo.controller.guide;
 import com.example.aupo.Tables;
 import com.example.aupo.tables.pojos.Level;
 import com.example.aupo.tables.pojos.Parallel;
+import com.example.aupo.tables.pojos.Year;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
@@ -30,6 +31,13 @@ public class GuideRepository {
                 .selectFrom(Tables.LEVEL)
                 .where(condition)
                 .fetchInto(Level.class);
+    }
+
+    public List<Year> fetchYears(Condition condition){
+        return dslContext
+                .selectFrom(Tables.YEAR)
+                .where(condition)
+                .fetchInto(Year.class);
     }
 
     public boolean existsParallels(Condition condition){

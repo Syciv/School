@@ -58,20 +58,5 @@ public class TeacherRestController {
         teacherRestService.updateTeacher(teacher);
     }
 
-    @PostMapping(value = "upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> uploadCsv(MultipartFile csvFile) {
-        String fileContent;
-
-        try {
-            fileContent = CSVUtil.getFileContent(csvFile);
-        }
-        catch (IOException exception){
-            LogUtil.info("Невозможно обработать файл teacher: " + csvFile.getName());
-            return ResponseEntity.badRequest().body("Невозможно обработать файл");
-        }
-
-        teacherRestService.saveFromCSV(fileContent);
-        return ResponseEntity.ok("Ок");
-    }
 
 }

@@ -69,34 +69,6 @@ public class TeacherRestService {
         return result;
     }
 
-
-    @Transactional
-    public void saveFromCSV(String fileContent) {
-        List<String[]> values = CSVUtil.parseCSV(fileContent, ";");
-        List<TeacherRecord> teacherRecordList = values.stream().map(this::getTeacherRecordFromCSVLine).toList();
-
-        // Удаление текущих сосояний добавляемых сущностей
-        teacherRepository.updateDateTimeOfDeleteByIds(
-                teacherRecordList.stream().map(TeacherRecord::getEntityId).toList(),
-                LocalDateTime.now());
-        // Все сущности добавляются одним batch запросом
-        teacherRepository.batchInsert(teacherRecordList);
-    }
-
-    private TeacherRecord getTeacherRecordFromCSVLine(String[] elements){
-        try {
-            TeacherRecord teacherRecord = new TeacherRecord();
-            teacherRecord.setEntityId(Long.parseLong(elements[0]));
-            teacherRecord.setSurname(elements[1]);
-            teacherRecord.setName(elements[2]);
-            teacherRecord.setPatronymic(elements[3]);
-            teacherRecord.setDatetimeOfCreation(LocalDateTime.now());
-            return teacherRecord;
-        }
-        catch (NumberFormatException e){
-            throw new ValidationException("Неверный формат данных в файле");
-        }
-    }
     
     private Teacher getTeacherPojoFromCreateDto(TeacherCreateDto teacherCreateDto){
         Teacher teacher = new Teacher();

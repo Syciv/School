@@ -22,6 +22,13 @@ public class TeacherRepository{
 
     private final DSLContext dslContext;
 
+    public List<Teacher> fetch(Condition condition){
+        return dslContext
+                .selectFrom(TEACHER)
+                .where(condition)
+                .fetchInto(Teacher.class);
+    }
+
     public List<Teacher> fetch(Condition condition, Integer page, Integer pageSize){
         return dslContext
                 .selectFrom(TEACHER)
@@ -39,18 +46,6 @@ public class TeacherRepository{
                         TEACHER.DATETIME_OF_DELETE.isNull())
                 .fetchOneInto(Teacher.class)
         );
-    }
-
-    public void batchInsert(List<TeacherRecord> teacherRecordList){
-        dslContext.batchInsert(teacherRecordList).execute();
-    }
-
-    public void updateDateTimeOfDeleteByIds(List<Long> entityIds, LocalDateTime localDateTime) {
-        dslContext
-                .update(TEACHER)
-                .set(TEACHER.DATETIME_OF_DELETE, localDateTime)
-                .where(TEACHER.ENTITY_ID.in(entityIds))
-                .execute();
     }
 
     public Long getCount(Condition condition) {
