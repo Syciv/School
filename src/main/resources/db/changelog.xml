@@ -176,5 +176,26 @@
         </sql>
     </changeSet>
 
+    <changeSet id="study/1.0/01-04-2023/1" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+            <![CDATA[
+            CREATE TABLE study.user(
+                id bigserial PRIMARY KEY,
+                entity_id bigint,
+                login text,
+                password text,
+                name text,
+                surname text,
+                patronymic text,
+                is_active boolean,
+                is_admin boolean,
+                datetime_of_creation timestamp,
+                datetime_of_delete timestamp
+            );
+            ]]>
+        </sql>
+    </changeSet>
+
+
 
 </databaseChangeLog>
