@@ -9,6 +9,8 @@ import com.example.aupo.tables.records.TeacherRecord;
 import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
+import org.jooq.SortField;
+import org.jooq.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,8 +45,18 @@ public class TeacherRestService {
             Integer pageSize,
             String name,
             String surname,
-            String patronymic
+            String patronymic,
+            TeacherSortEnum teacherSortEnum,
+            SortOrder sortOrder
     ) {
+
+        SortField<?> sortField = switch (teacherSortEnum){
+            case ID -> TEACHER.ID.sort(sortOrder);
+            case NAME -> TEACHER.NAME.sort(sortOrder);
+            case SURNAME -> TEACHER.SURNAME.sort(sortOrder);
+            case PATRONYMIC -> TEACHER.PATRONYMIC.sort(sortOrder);
+        };
+
         Condition condition = TEACHER.DATETIME_OF_DELETE.isNull();
         if(Objects.nonNull(name)){
             condition = condition.and(TEACHER.NAME.containsIgnoreCase(name));
@@ -56,7 +68,7 @@ public class TeacherRestService {
             condition = condition.and(TEACHER.PATRONYMIC.containsIgnoreCase(patronymic));
         }
 
-        List<Teacher> items = teacherRepository.fetch(condition, page, pageSize);
+        List<Teacher> items = teacherRepository.fetch(condition, page, pageSize, sortField);
         Long total = teacherRepository.getCount(condition);
 
         ResponseList<Teacher> result = new ResponseList<>();

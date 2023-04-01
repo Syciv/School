@@ -13,6 +13,8 @@ import com.example.aupo.tables.records.PupilRecord;
 import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
+import org.jooq.SortField;
+import org.jooq.SortOrder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +56,18 @@ public class PupilRestService {
             String name,
             String surname,
             String patronymic,
-            Long groupId
+            Long groupId,
+            PupilSortEnum pupilSortEnum,
+            SortOrder sortOrder
     ) {
+
+        SortField<?> sortField = switch (pupilSortEnum){
+            case ID -> PUPIL.ID.sort(sortOrder);
+            case NAME -> PUPIL.NAME.sort(sortOrder);
+            case SURNAME -> PUPIL.SURNAME.sort(sortOrder);
+            case PATRONYMIC -> PUPIL.PATRONYMIC.sort(sortOrder);
+        };
+
         Condition condition = PUPIL.DATETIME_OF_DELETE.isNull();
         if(Objects.nonNull(name)){
             condition = condition.and(PUPIL.NAME.containsIgnoreCase(name));
@@ -70,7 +82,7 @@ public class PupilRestService {
             condition = condition.and(PUPIL.GROUP_ENTITY_ID.eq(groupId));
         }
 
-        List<Pupil> items = pupilRepository.fetch(condition, page, pageSize);
+        List<Pupil> items = pupilRepository.fetch(condition, page, pageSize, sortField);
         Long total = pupilRepository.getCount(condition);
 
         ResponseList<Pupil> result = new ResponseList<>();

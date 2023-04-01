@@ -1,11 +1,13 @@
 package com.example.aupo.controller.pupil;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.controller.teacher.TeacherSortEnum;
 import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.tables.pojos.Pupil;
 import com.example.aupo.util.CSVUtil;
 import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
+import org.jooq.SortOrder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -38,6 +40,8 @@ public class PupilRestController {
      */
     @GetMapping(value = "/list")
     public ResponseList<Pupil> list(
+            @RequestParam(value = "sortBy", defaultValue = "id") PupilSortEnum pupilSortEnum,
+            @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "name", required = false) String name,
@@ -45,7 +49,7 @@ public class PupilRestController {
             @RequestParam(value = "patronymic", required = false) String patronymic,
             @RequestParam(value = "groupId", required = false) Long groupId
             ){
-        return pupilRestService.getList(page, pageSize, name, surname, patronymic, groupId);
+        return pupilRestService.getList(page, pageSize, name, surname, patronymic, groupId, pupilSortEnum, sortOrder);
     }
 
     @PostMapping

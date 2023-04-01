@@ -6,6 +6,7 @@ import com.example.aupo.tables.records.TeacherRecord;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.SortField;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
@@ -29,10 +30,11 @@ public class TeacherRepository{
                 .fetchInto(Teacher.class);
     }
 
-    public List<Teacher> fetch(Condition condition, Integer page, Integer pageSize){
+    public List<Teacher> fetch(Condition condition, Integer page, Integer pageSize, SortField<?> sortField){
         return dslContext
                 .selectFrom(TEACHER)
                 .where(condition)
+                .orderBy(sortField)
                 .limit(pageSize)
                 .offset(pageSize * (page - 1))
                 .fetchInto(Teacher.class);

@@ -6,6 +6,7 @@ import com.example.aupo.tables.pojos.Teacher;
 import com.example.aupo.util.CSVUtil;
 import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
+import org.jooq.SortOrder;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -39,13 +40,15 @@ public class TeacherRestController {
      */
     @GetMapping(value = "/list")
     public ResponseList<Teacher> list(
+            @RequestParam(value = "sortBy", defaultValue = "id") TeacherSortEnum teacherSortEnum,
+            @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "surname", required = false) String surname,
             @RequestParam(value = "patronymic", required = false) String patronymic
     ){
-        return teacherRestService.getList(page, pageSize, name, surname, patronymic);
+        return teacherRestService.getList(page, pageSize, name, surname, patronymic, teacherSortEnum, sortOrder);
     }
 
     @PostMapping
