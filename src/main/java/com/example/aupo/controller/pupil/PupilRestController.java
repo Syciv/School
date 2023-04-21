@@ -40,7 +40,7 @@ public class PupilRestController {
      */
     @GetMapping(value = "/list")
     public ResponseList<Pupil> list(
-            @RequestParam(value = "sortBy", defaultValue = "id") PupilSortEnum pupilSortEnum,
+            @RequestParam(value = "sortBy", defaultValue = "ID") PupilSortEnum pupilSortEnum,
             @RequestParam(value = "sortOrder", defaultValue = "ASC") SortOrder sortOrder,
             @RequestParam(value = "page", defaultValue = "1") Integer page,
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
