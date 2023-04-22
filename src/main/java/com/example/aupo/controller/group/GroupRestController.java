@@ -79,4 +79,9 @@ public class GroupRestController {
         return ResponseEntity.ok("Ок");
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        groupRestService.delete(id);
+    }
+
 }

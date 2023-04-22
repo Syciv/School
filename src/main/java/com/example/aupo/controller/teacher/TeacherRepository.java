@@ -76,4 +76,12 @@ public class TeacherRepository{
                         selectFrom(TEACHER)
                                 .where(condition));
     }
+
+    public void updateDateTimeOfDeleteByIds(List<Long> ids, LocalDateTime now) {
+        dslContext
+                .update(TEACHER)
+                .set(TEACHER.DATETIME_OF_DELETE, now)
+                .where(TEACHER.ENTITY_ID.in(ids))
+                .execute();
+    }
 }

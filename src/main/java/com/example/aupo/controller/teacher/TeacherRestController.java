@@ -62,5 +62,8 @@ public class TeacherRestController {
         teacherRestService.updateTeacher(teacher);
     }
 
-
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        teacherRestService.delete(id);
+    }
 }

@@ -103,4 +103,8 @@ public class TeacherRestService {
         teacherRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
         teacherDao.insert(teacher);
     }
+
+    public void delete(Long id) {
+        teacherRepository.updateDateTimeOfDeleteByIds(List.of(id), LocalDateTime.now());
+    }
 }

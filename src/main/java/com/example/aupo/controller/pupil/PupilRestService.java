@@ -207,4 +207,8 @@ public class PupilRestService {
             throw new ValidationException(stringBuilder.toString());
         }
     }
+
+    public void delete(Long id) {
+        pupilRepository.updateDateTimeOfDeleteByIds(List.of(id), LocalDateTime.now());
+    }
 }

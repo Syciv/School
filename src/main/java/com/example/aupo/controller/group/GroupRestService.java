@@ -176,4 +176,8 @@ public class GroupRestService {
         }
     }
 
+    public void delete(Long id) {
+        groupRepository.updateDateTimeOfDeleteByIds(List.of(id), LocalDateTime.now());
+    }
+
 }

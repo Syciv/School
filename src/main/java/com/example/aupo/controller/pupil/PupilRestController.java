@@ -89,5 +89,9 @@ public class PupilRestController {
         pupilRestService.migrate(pupilMigrateDto.getPupilIds(), pupilMigrateDto.getGroupId());
     }
 
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id){
+        pupilRestService.delete(id);
+    }
 
 }
