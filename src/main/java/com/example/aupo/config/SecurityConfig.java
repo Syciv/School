@@ -1,6 +1,9 @@
 package com.example.aupo.config;
 
+import com.example.aupo.controller.user.UserRepository;
+import com.example.aupo.tables.pojos.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +24,9 @@ import javax.sql.DataSource;
 @EnableWebSecurity
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private DataSource dataSource;
@@ -61,12 +67,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .formLogin()
                 .loginProcessingUrl("/login")
-                .successHandler(new AuthenticationSuccessHandler() {
-                    @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
-                        String login = authentication.getName();
-                        response.setStatus(HttpServletResponse.SC_OK);
-                    }
+                .failureHandler((request, response, authentication) -> {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                }).successHandler((request, response, authentication) -> {
+                    String login = authentication.getName();
+                    User user = userRepository.fetchActual(login);
+                    response.setContentType("application/json");
+                    response.getWriter().write(String.format("{\"isAdmin\": \"%s\"}", user.getIsAdmin()));
+                    response.setStatus(HttpServletResponse.SC_OK);
                 })
                 .permitAll()
                 .and()
