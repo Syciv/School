@@ -58,7 +58,8 @@ public class PupilRestService {
             String patronymic,
             Long groupId,
             PupilSortEnum pupilSortEnum,
-            SortOrder sortOrder
+            SortOrder sortOrder,
+            String search
     ) {
 
         SortField<?> sortField = switch (pupilSortEnum){
@@ -80,6 +81,10 @@ public class PupilRestService {
         }
         if(Objects.nonNull(groupId)){
             condition = condition.and(PUPIL.GROUP_ENTITY_ID.eq(groupId));
+        }
+        if(Objects.nonNull(search)){
+            condition = condition.and(PUPIL.NAME.containsIgnoreCase(search).or(PUPIL.SURNAME.containsIgnoreCase(search))
+                    .or(PUPIL.PATRONYMIC.containsIgnoreCase(search)));
         }
 
         List<Pupil> items = pupilRepository.fetch(condition, page, pageSize, sortField);

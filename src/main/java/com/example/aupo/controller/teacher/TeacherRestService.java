@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.aupo.tables.Pupil.PUPIL;
 import static com.example.aupo.tables.Teacher.TEACHER;
 
 @Service
@@ -47,7 +48,8 @@ public class TeacherRestService {
             String surname,
             String patronymic,
             TeacherSortEnum teacherSortEnum,
-            SortOrder sortOrder
+            SortOrder sortOrder,
+            String search
     ) {
 
         SortField<?> sortField = switch (teacherSortEnum){
@@ -66,6 +68,10 @@ public class TeacherRestService {
         }
         if(Objects.nonNull(patronymic)){
             condition = condition.and(TEACHER.PATRONYMIC.containsIgnoreCase(patronymic));
+        }
+        if(Objects.nonNull(search)){
+            condition = condition.and(TEACHER.NAME.containsIgnoreCase(search).or(TEACHER.SURNAME.containsIgnoreCase(search))
+                    .or(TEACHER.PATRONYMIC.containsIgnoreCase(search)));
         }
 
         List<Teacher> items = teacherRepository.fetch(condition, page, pageSize, sortField);

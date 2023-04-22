@@ -46,9 +46,10 @@ public class TeacherRestController {
             @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize,
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "surname", required = false) String surname,
-            @RequestParam(value = "patronymic", required = false) String patronymic
+            @RequestParam(value = "patronymic", required = false) String patronymic,
+            @RequestParam(value = "search", required = false) String search
     ){
-        return teacherRestService.getList(page, pageSize, name, surname, patronymic, teacherSortEnum, sortOrder);
+        return teacherRestService.getList(page, pageSize, name, surname, patronymic, teacherSortEnum, sortOrder, search);
     }
 
     @PostMapping

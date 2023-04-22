@@ -47,9 +47,10 @@ public class PupilRestController {
             @RequestParam(value = "name", required = false) String name,
             @RequestParam(value = "surname", required = false) String surname,
             @RequestParam(value = "patronymic", required = false) String patronymic,
-            @RequestParam(value = "groupId", required = false) Long groupId
+            @RequestParam(value = "groupId", required = false) Long groupId,
+            @RequestParam(value = "search", required = false) String search
             ){
-        return pupilRestService.getList(page, pageSize, name, surname, patronymic, groupId, pupilSortEnum, sortOrder);
+        return pupilRestService.getList(page, pageSize, name, surname, patronymic, groupId, pupilSortEnum, sortOrder, search);
     }
 
     @PostMapping
