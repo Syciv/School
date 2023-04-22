@@ -200,5 +200,12 @@
         <sqlFile path="sql/fill_db.sql" relativeToChangelogFile="true" splitStatements="false" encoding="utf8"/>
     </changeSet>
 
+    <changeSet id="study/1.0/22-04-2023/2" author="ivan_sych" logicalFilePath="set-1.xml">
+        <sql>
+        <![CDATA[
+            insert into study.user(login, password, is_admin, is_active) values('admin', '$2a$12$lG6/fYgjoPVbP5wxEkbkeOUR76NLsBaOtFIcJw3Q4uzwEn218t0Ye', true, true);
+        ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
