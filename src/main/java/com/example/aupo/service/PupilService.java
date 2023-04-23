@@ -149,7 +149,7 @@ public class PupilService {
     }
 
     @Transactional
-    public void updatePupil(Pupil pupil) {
+    public Pupil updatePupil(Pupil pupil) {
         pupil.setId(null);
 
         Pupil actual = pupilRepository.fetchActualByEntityId(pupil.getEntityId()).orElseThrow(NotFoundException::new);
@@ -158,8 +158,11 @@ public class PupilService {
         actual.setDatetimeOfDelete(LocalDateTime.now());
         pupilDao.update(actual);
         pupil.setDatetimeOfCreation(actual.getDatetimeOfCreation());
-        if(Objects.isNull(pupil.getName())){
+        if(Objects.isNull(pupil.getName())) {
             pupil.setName(actual.getName());
+        }
+        if(Objects.isNull(pupil.getGroupEntityId())){
+            pupil.setGroupEntityId((actual.getGroupEntityId()));
         }
         if(Objects.isNull(pupil.getSurname())){
             pupil.setSurname(actual.getSurname());
@@ -169,6 +172,7 @@ public class PupilService {
         }
         System.out.println(pupil);
         pupilDao.insert(pupil);
+        return pupil;
     }
 
     @Transactional

@@ -62,8 +62,8 @@ public class PupilRestController {
     }
 
     @PutMapping
-    public void update(@RequestBody Pupil pupil){
-        pupilService.updatePupil(pupil);
+    public Pupil update(@RequestBody Pupil pupil){
+        return pupilService.updatePupil(pupil);
     }
 
 

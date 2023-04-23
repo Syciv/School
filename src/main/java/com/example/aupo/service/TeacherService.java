@@ -95,7 +95,7 @@ public class TeacherService {
     }
 
     @Transactional
-    public void updateTeacher(Teacher teacher) {
+    public Teacher updateTeacher(Teacher teacher) {
         teacher.setId(null);
 
         Teacher actual = teacherRepository.fetchActualByEntityId(teacher.getEntityId()).orElseThrow(NotFoundException::new);
@@ -115,6 +115,7 @@ public class TeacherService {
             teacher.setPatronymic(actual.getPatronymic());
         }
         teacherDao.insert(teacher);
+        return teacher;
     }
 
     public void delete(Long id) {

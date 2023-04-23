@@ -56,8 +56,8 @@ public class TeacherRestController {
     }
 
     @PutMapping
-    public void update(@RequestBody Teacher teacher){
-        teacherService.updateTeacher(teacher);
+    public Teacher update(@RequestBody Teacher teacher){
+        return teacherService.updateTeacher(teacher);
     }
 
     @DeleteMapping("/{id}")
