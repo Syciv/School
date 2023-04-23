@@ -1,25 +1,23 @@
-package com.example.aupo.controller.teacher;
+package com.example.aupo.controller;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.service.TeacherService;
+import com.example.aupo.dto.TeacherCreateDto;
 import com.example.aupo.exception.NotFoundException;
+import com.example.aupo.sort.TeacherSortEnum;
 import com.example.aupo.tables.pojos.Teacher;
-import com.example.aupo.util.CSVUtil;
 import com.example.aupo.util.LogUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.SortOrder;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping(value = "/teacher")
 public class TeacherRestController {
 
-    private final TeacherRestService teacherRestService;
+    private final TeacherService teacherService;
 
     /**
      * Просмотр отдельной сущности по внешнему идентификатору
@@ -27,7 +25,7 @@ public class TeacherRestController {
     @GetMapping(value = "/{entityId}")
     public ResponseEntity<Teacher> get(@PathVariable Long entityId) throws NotFoundException {
         try {
-            return ResponseEntity.ok(teacherRestService.getOne(entityId));
+            return ResponseEntity.ok(teacherService.getOne(entityId));
         }
         catch (NotFoundException e){
             LogUtil.info(String.format("Не найдено: teacher - %d", entityId));
@@ -49,21 +47,21 @@ public class TeacherRestController {
             @RequestParam(value = "patronymic", required = false) String patronymic,
             @RequestParam(value = "search", required = false) String search
     ){
-        return teacherRestService.getList(page, pageSize, name, surname, patronymic, teacherSortEnum, sortOrder, search);
+        return teacherService.getList(page, pageSize, name, surname, patronymic, teacherSortEnum, sortOrder, search);
     }
 
     @PostMapping
     public void create(@RequestBody TeacherCreateDto teacherCreateDto){
-        teacherRestService.createTeacher(teacherCreateDto);
+        teacherService.createTeacher(teacherCreateDto);
     }
 
     @PutMapping
     public void update(@RequestBody Teacher teacher){
-        teacherRestService.updateTeacher(teacher);
+        teacherService.updateTeacher(teacher);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        teacherRestService.delete(id);
+        teacherService.delete(id);
     }
 }

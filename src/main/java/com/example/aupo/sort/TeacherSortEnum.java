@@ -1,4 +1,4 @@
-package com.example.aupo.controller.teacher;
+package com.example.aupo.sort;
 
 public enum TeacherSortEnum {
     ID,

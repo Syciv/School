@@ -1,20 +1,19 @@
-package com.example.aupo.controller.group;
+package com.example.aupo.service;
 
 import com.example.aupo.Tables;
 import com.example.aupo.controller.dto.ResponseList;
-import com.example.aupo.controller.guide.GuideRepository;
-import com.example.aupo.controller.teacher.TeacherRepository;
+import com.example.aupo.dto.GroupCreateDto;
+import com.example.aupo.repository.GuideRepository;
+import com.example.aupo.repository.TeacherRepository;
 import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.exception.ValidationException;
+import com.example.aupo.repository.GroupRepository;
 import com.example.aupo.tables.daos.GroupDao;
-import com.example.aupo.tables.daos.ParallelDao;
 import com.example.aupo.tables.pojos.Group;
 import com.example.aupo.tables.pojos.Parallel;
 import com.example.aupo.tables.pojos.Teacher;
 import com.example.aupo.tables.pojos.Year;
 import com.example.aupo.tables.records.GroupRecord;
-import com.example.aupo.tables.records.PupilRecord;
-import com.example.aupo.tables.records.TeacherRecord;
 import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
@@ -32,7 +31,7 @@ import static com.example.aupo.tables.Teacher.TEACHER;
 
 @Service
 @AllArgsConstructor
-public class GroupRestService {
+public class GroupService {
 
     private final GroupRepository groupRepository;
 

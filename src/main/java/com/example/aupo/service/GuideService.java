@@ -1,5 +1,6 @@
-package com.example.aupo.controller.guide;
+package com.example.aupo.service;
 
+import com.example.aupo.repository.GuideRepository;
 import com.example.aupo.tables.pojos.Level;
 import com.example.aupo.tables.pojos.Parallel;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,7 @@ import static org.jooq.impl.DSL.trueCondition;
 
 @Service
 @AllArgsConstructor
-public class GuideRestService {
+public class GuideService {
 
     private final GuideRepository guideRepository;
 

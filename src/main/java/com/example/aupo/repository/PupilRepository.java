@@ -1,4 +1,4 @@
-package com.example.aupo.controller.pupil;
+package com.example.aupo.repository;
 
 import com.example.aupo.tables.pojos.Pupil;
 import com.example.aupo.tables.records.PupilRecord;

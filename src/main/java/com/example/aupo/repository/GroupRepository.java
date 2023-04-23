@@ -1,4 +1,4 @@
-package com.example.aupo.controller.group;
+package com.example.aupo.repository;
 
 import static com.example.aupo.Sequences.GROUP_ID_SEQ;
 import static com.example.aupo.Tables.PUPIL;

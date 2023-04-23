@@ -1,4 +1,4 @@
-package com.example.aupo.controller.pupil;
+package com.example.aupo.sort;
 
 public enum PupilSortEnum {
     ID,

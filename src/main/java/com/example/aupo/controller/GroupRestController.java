@@ -1,7 +1,9 @@
-package com.example.aupo.controller.group;
+package com.example.aupo.controller;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.dto.GroupCreateDto;
 import com.example.aupo.exception.NotFoundException;
+import com.example.aupo.service.GroupService;
 import com.example.aupo.tables.pojos.Group;
 import com.example.aupo.util.CSVUtil;
 import com.example.aupo.util.LogUtil;
@@ -18,7 +20,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class GroupRestController {
 
-    private final GroupRestService groupRestService;
+    private final GroupService groupService;
 
     /**
      * Пагинированный список с фильтрами по всем полям
@@ -31,7 +33,7 @@ public class GroupRestController {
             @RequestParam(value = "teacherEntityId", required = false) Long teacherEntityId,
             @RequestParam(value = "year", required = false) Integer year
     ){
-        return groupRestService.list(
+        return groupService.list(
                 page,
                 pageSize,
                 parallelEntityId,
@@ -46,7 +48,7 @@ public class GroupRestController {
     @GetMapping(value = "/{entityId}")
     public ResponseEntity<Group> get(@PathVariable Long entityId){
         try {
-            return ResponseEntity.ok(groupRestService.getOne(entityId));
+            return ResponseEntity.ok(groupService.getOne(entityId));
         } catch (NotFoundException e) {
             LogUtil.info(String.format("Не найдено: group - %d", entityId));
             return ResponseEntity.notFound().build();
@@ -55,12 +57,12 @@ public class GroupRestController {
 
     @PostMapping
     public void create(@RequestBody GroupCreateDto groupCreateDto){
-        groupRestService.create(groupCreateDto);
+        groupService.create(groupCreateDto);
     }
 
     @PutMapping
     public void get(@RequestBody Group group){
-        groupRestService.update(group);
+        groupService.update(group);
     }
 
     @PostMapping(value = "upload-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -75,13 +77,13 @@ public class GroupRestController {
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
 
-        groupRestService.saveFromCSV(fileContent);
+        groupService.saveFromCSV(fileContent);
         return ResponseEntity.ok("Ок");
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        groupRestService.delete(id);
+        groupService.delete(id);
     }
 
 }

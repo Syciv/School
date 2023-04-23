@@ -1,4 +1,4 @@
-package com.example.aupo.controller.pupil;
+package com.example.aupo.dto;
 
 import lombok.Data;
 

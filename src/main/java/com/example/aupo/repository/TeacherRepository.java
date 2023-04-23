@@ -1,4 +1,4 @@
-package com.example.aupo.controller.teacher;
+package com.example.aupo.repository;
 
 import com.example.aupo.Tables;
 import com.example.aupo.tables.pojos.Teacher;
@@ -19,18 +19,18 @@ import static org.jooq.impl.DSL.selectFrom;
 
 @Repository
 @AllArgsConstructor
-public class TeacherRepository{
+public class TeacherRepository {
 
     private final DSLContext dslContext;
 
-    public List<Teacher> fetch(Condition condition){
+    public List<Teacher> fetch(Condition condition) {
         return dslContext
                 .selectFrom(TEACHER)
                 .where(condition)
                 .fetchInto(Teacher.class);
     }
 
-    public List<Teacher> fetch(Condition condition, Integer page, Integer pageSize, SortField<?> sortField){
+    public List<Teacher> fetch(Condition condition, Integer page, Integer pageSize, SortField<?> sortField) {
         return dslContext
                 .selectFrom(TEACHER)
                 .where(condition)
@@ -40,13 +40,13 @@ public class TeacherRepository{
                 .fetchInto(Teacher.class);
     }
 
-    public Optional<Teacher> fetchActualByEntityId(Long entityId){
+    public Optional<Teacher> fetchActualByEntityId(Long entityId) {
         return Optional.ofNullable(
                 dslContext
-                .selectFrom(TEACHER)
-                .where(TEACHER.ENTITY_ID.eq(entityId),
-                        TEACHER.DATETIME_OF_DELETE.isNull())
-                .fetchOneInto(Teacher.class)
+                        .selectFrom(TEACHER)
+                        .where(TEACHER.ENTITY_ID.eq(entityId),
+                                TEACHER.DATETIME_OF_DELETE.isNull())
+                        .fetchOneInto(Teacher.class)
         );
     }
 
@@ -70,7 +70,7 @@ public class TeacherRepository{
         return dslContext.nextval(TEACHER_ID_SEQ);
     }
 
-    public boolean exists(Condition condition){
+    public boolean exists(Condition condition) {
         return dslContext
                 .fetchExists(
                         selectFrom(TEACHER)

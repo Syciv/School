@@ -1,4 +1,4 @@
-package com.example.aupo.controller.user;
+package com.example.aupo.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.example.aupo.controller.user;
+package com.example.aupo.repository;
 
 import com.example.aupo.Tables;
 import com.example.aupo.tables.pojos.User;

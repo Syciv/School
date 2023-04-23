@@ -1,8 +1,10 @@
-package com.example.aupo.controller.user;
+package com.example.aupo.service;
 
 import com.example.aupo.Tables;
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.dto.UserCreateDto;
 import com.example.aupo.exception.ValidationException;
+import com.example.aupo.repository.UserRepository;
 import com.example.aupo.tables.daos.UserDao;
 import com.example.aupo.tables.pojos.User;
 import lombok.AllArgsConstructor;
@@ -16,7 +18,7 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-public class UserRestService {
+public class UserService {
 
     private final UserDao userDao;
     private final UserRepository userRepository;

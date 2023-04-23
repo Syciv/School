@@ -1,10 +1,12 @@
-package com.example.aupo.controller.pupil;
+package com.example.aupo.service;
 
 import com.example.aupo.controller.dto.ResponseList;
-import com.example.aupo.controller.group.GroupCreateDto;
-import com.example.aupo.controller.group.GroupRepository;
+import com.example.aupo.dto.PupilCreateDto;
+import com.example.aupo.repository.GroupRepository;
 import com.example.aupo.exception.NotFoundException;
 import com.example.aupo.exception.ValidationException;
+import com.example.aupo.repository.PupilRepository;
+import com.example.aupo.sort.PupilSortEnum;
 import com.example.aupo.tables.daos.GroupDao;
 import com.example.aupo.tables.daos.PupilDao;
 import com.example.aupo.tables.pojos.Group;
@@ -25,13 +27,11 @@ import java.util.List;
 import java.util.Objects;
 
 import static com.example.aupo.tables.Group.GROUP;
-import static com.example.aupo.tables.Parallel.PARALLEL;
 import static com.example.aupo.tables.Pupil.PUPIL;
-import static com.example.aupo.tables.Teacher.TEACHER;
 
 @Service
 @AllArgsConstructor
-public class PupilRestService {
+public class PupilService {
 
     private final PupilRepository pupilRepository;
 

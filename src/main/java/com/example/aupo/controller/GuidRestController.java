@@ -1,5 +1,6 @@
-package com.example.aupo.controller.guide;
+package com.example.aupo.controller;
 
+import com.example.aupo.service.GuideService;
 import com.example.aupo.tables.pojos.Level;
 import com.example.aupo.tables.pojos.Parallel;
 import lombok.AllArgsConstructor;
@@ -17,16 +18,16 @@ import java.util.List;
 @RequestMapping(value = "/guide")
 public class GuidRestController {
 
-    private final GuideRestService guideRestService;
+    private final GuideService guideService;
 
     @GetMapping(value = "/parallel")
     public List<Parallel> getParallels(){
-        return guideRestService.parallelList();
+        return guideService.parallelList();
     }
 
     @GetMapping(value = "/level")
     public List<Level> getLevels(){
-        return guideRestService.getLevelList();
+        return guideService.getLevelList();
     }
 
 }

@@ -1,8 +1,11 @@
-package com.example.aupo.controller.pupil;
+package com.example.aupo.controller;
 
 import com.example.aupo.controller.dto.ResponseList;
-import com.example.aupo.controller.teacher.TeacherSortEnum;
+import com.example.aupo.service.PupilService;
+import com.example.aupo.dto.PupilCreateDto;
+import com.example.aupo.dto.PupilMigrateDto;
 import com.example.aupo.exception.NotFoundException;
+import com.example.aupo.sort.PupilSortEnum;
 import com.example.aupo.tables.pojos.Pupil;
 import com.example.aupo.util.CSVUtil;
 import com.example.aupo.util.LogUtil;
@@ -20,7 +23,7 @@ import java.io.IOException;
 @AllArgsConstructor
 public class PupilRestController {
 
-    private final PupilRestService pupilRestService;
+    private final PupilService pupilService;
 
     /**
      * Просмотр отдельной сущности по внешнему идентификатору
@@ -28,7 +31,7 @@ public class PupilRestController {
     @GetMapping(value = "/{entityId}")
     public ResponseEntity<Pupil> get(@PathVariable Long entityId) {
         try {
-            return ResponseEntity.ok(pupilRestService.getOne(entityId));
+            return ResponseEntity.ok(pupilService.getOne(entityId));
         } catch (NotFoundException e) {
             LogUtil.info(String.format("Не найдено: pupil - %d", entityId));
             return ResponseEntity.notFound().build();
@@ -50,17 +53,17 @@ public class PupilRestController {
             @RequestParam(value = "groupId", required = false) Long groupId,
             @RequestParam(value = "search", required = false) String search
             ){
-        return pupilRestService.getList(page, pageSize, name, surname, patronymic, groupId, pupilSortEnum, sortOrder, search);
+        return pupilService.getList(page, pageSize, name, surname, patronymic, groupId, pupilSortEnum, sortOrder, search);
     }
 
     @PostMapping
     public void create(@RequestBody PupilCreateDto pupilCreateDto){
-        pupilRestService.createPupil(pupilCreateDto);
+        pupilService.createPupil(pupilCreateDto);
     }
 
     @PutMapping
     public void update(@RequestBody Pupil pupil){
-        pupilRestService.updatePupil(pupil);
+        pupilService.updatePupil(pupil);
     }
 
 
@@ -76,7 +79,7 @@ public class PupilRestController {
             return ResponseEntity.badRequest().body("Невозможно обработать файл");
         }
 
-        pupilRestService.saveFromCSV(fileContent);
+        pupilService.saveFromCSV(fileContent);
         return ResponseEntity.ok("Ок");
     }
 
@@ -86,12 +89,12 @@ public class PupilRestController {
      */
     @PutMapping("/migrate")
     public void migrate(@RequestBody PupilMigrateDto pupilMigrateDto){
-        pupilRestService.migrate(pupilMigrateDto.getPupilIds(), pupilMigrateDto.getGroupId());
+        pupilService.migrate(pupilMigrateDto.getPupilIds(), pupilMigrateDto.getGroupId());
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id){
-        pupilRestService.delete(id);
+        pupilService.delete(id);
     }
 
 }

@@ -1,12 +1,12 @@
-package com.example.aupo.controller.teacher;
+package com.example.aupo.service;
 
 import com.example.aupo.controller.dto.ResponseList;
+import com.example.aupo.dto.TeacherCreateDto;
 import com.example.aupo.exception.NotFoundException;
-import com.example.aupo.exception.ValidationException;
+import com.example.aupo.repository.TeacherRepository;
+import com.example.aupo.sort.TeacherSortEnum;
 import com.example.aupo.tables.daos.TeacherDao;
 import com.example.aupo.tables.pojos.Teacher;
-import com.example.aupo.tables.records.TeacherRecord;
-import com.example.aupo.util.CSVUtil;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.SortField;
@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
-import static com.example.aupo.tables.Pupil.PUPIL;
 import static com.example.aupo.tables.Teacher.TEACHER;
 
 @Service
 @AllArgsConstructor
-public class TeacherRestService {
+public class TeacherService {
 
     private final TeacherRepository teacherRepository;
     
