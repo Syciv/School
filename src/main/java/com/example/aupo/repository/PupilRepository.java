@@ -7,13 +7,13 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.SortField;
 import org.springframework.stereotype.Repository;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 import static com.example.aupo.Sequences.PUPIL_ID_SEQ;
 import static com.example.aupo.Tables.PUPIL;
-import static com.example.aupo.Tables.TEACHER;
 import static org.jooq.impl.DSL.selectFrom;
 
 

@@ -64,6 +64,7 @@ public class PupilService {
 
         SortField<?> sortField = switch (pupilSortEnum){
             case ID -> PUPIL.ID.sort(sortOrder);
+            case ENTITY_ID -> PUPIL.ENTITY_ID.sort(sortOrder);
             case NAME -> PUPIL.NAME.sort(sortOrder);
             case SURNAME -> PUPIL.SURNAME.sort(sortOrder);
             case PATRONYMIC -> PUPIL.PATRONYMIC.sort(sortOrder);
@@ -149,8 +150,24 @@ public class PupilService {
 
     @Transactional
     public void updatePupil(Pupil pupil) {
-        Condition condition = PUPIL.ENTITY_ID.eq(pupil.getEntityId()).and(PUPIL.DATETIME_OF_DELETE.isNull());
-        pupilRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
+        pupil.setId(null);
+
+        Pupil actual = pupilRepository.fetchActualByEntityId(pupil.getEntityId()).orElseThrow(NotFoundException::new);
+
+        // Удаление текущего состояния сущности и добавление нового
+        actual.setDatetimeOfDelete(LocalDateTime.now());
+        pupilDao.update(actual);
+        pupil.setDatetimeOfCreation(actual.getDatetimeOfCreation());
+        if(Objects.isNull(pupil.getName())){
+            pupil.setName(actual.getName());
+        }
+        if(Objects.isNull(pupil.getSurname())){
+            pupil.setSurname(actual.getSurname());
+        }
+        if(Objects.isNull(pupil.getPatronymic())){
+            pupil.setPatronymic(actual.getPatronymic());
+        }
+        System.out.println(pupil);
         pupilDao.insert(pupil);
     }
 

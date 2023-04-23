@@ -53,6 +53,7 @@ public class TeacherService {
 
         SortField<?> sortField = switch (teacherSortEnum){
             case ID -> TEACHER.ID.sort(sortOrder);
+            case ENTITY_ID -> TEACHER.ENTITY_ID.sort(sortOrder);
             case NAME -> TEACHER.NAME.sort(sortOrder);
             case SURNAME -> TEACHER.SURNAME.sort(sortOrder);
             case PATRONYMIC -> TEACHER.PATRONYMIC.sort(sortOrder);
@@ -95,11 +96,24 @@ public class TeacherService {
 
     @Transactional
     public void updateTeacher(Teacher teacher) {
-        Condition condition = TEACHER.ENTITY_ID.eq(teacher.getEntityId()).and(TEACHER.DATETIME_OF_DELETE.isNull());
         teacher.setId(null);
 
+        Teacher actual = teacherRepository.fetchActualByEntityId(teacher.getEntityId()).orElseThrow(NotFoundException::new);
+
         // Удаление текущего состояния сущности и добавление нового
-        teacherRepository.updateDateTimeOfDeleteByCondition(condition, LocalDateTime.now());
+        actual.setDatetimeOfDelete(LocalDateTime.now());
+        teacherDao.update(actual);
+
+        teacher.setDatetimeOfCreation(actual.getDatetimeOfCreation());
+        if(Objects.isNull(teacher.getName())){
+            teacher.setName(actual.getName());
+        }
+        if(Objects.isNull(teacher.getSurname())){
+            teacher.setSurname(actual.getSurname());
+        }
+        if(Objects.isNull(teacher.getPatronymic())){
+            teacher.setPatronymic(actual.getPatronymic());
+        }
         teacherDao.insert(teacher);
     }
 

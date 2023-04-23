@@ -1,8 +1,6 @@
 package com.example.aupo.repository;
 
-import com.example.aupo.Tables;
 import com.example.aupo.tables.pojos.Teacher;
-import com.example.aupo.tables.records.TeacherRecord;
 import lombok.AllArgsConstructor;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
